@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: cinemaabyss-events-service
+
+server:
+  port: 8001
+
