@@ -15,12 +15,12 @@ import java.util.List;
 @Slf4j
 public class KafkaEventsConsumer {
 
-    @KafkaListener(id = "events",
-            topics = "events",
+    @KafkaListener(id = "user-events",
+            topics = "user-events",
             containerFactory = "kafkaListenerContainerFactory")
-    public void listener(@Payload List<EventDto> messageList,
+    public void userListener(@Payload List<EventDto> messageList,
                          Acknowledgment ack) {
-        log.debug("Client consumer: Обработка новых сообщений");
+        log.debug("User consumer: Обработка новых сообщений от пользователя");
         try {
            messageList.forEach(eventDto -> {
                log.info("Прочитано событие {}", eventDto);
@@ -28,6 +28,40 @@ public class KafkaEventsConsumer {
         } finally {
             ack.acknowledge();
         }
-        log.debug("Client consumer: записи обработаны");
+        log.debug("User consumer: записи обработаны");
     }
+
+    @KafkaListener(id = "payment-events",
+            topics = "payment-events",
+            containerFactory = "kafkaListenerContainerFactory")
+    public void paymentlistener(@Payload List<EventDto> messageList,
+                         Acknowledgment ack) {
+        log.debug("Payment consumer: Обработка новых платежных сообщений");
+        try {
+            messageList.forEach(eventDto -> {
+                log.info("Прочитано событие {}", eventDto);
+            });
+        } finally {
+            ack.acknowledge();
+        }
+        log.debug("Payment consumer: записи обработаны");
+    }
+
+    @KafkaListener(id = "movie-events",
+            topics = "movie-events",
+            containerFactory = "kafkaListenerContainerFactory")
+    public void movielistener(@Payload List<EventDto> messageList,
+                         Acknowledgment ack) {
+        log.debug("Movie consumer: Обработка новых сообщений");
+        try {
+            messageList.forEach(eventDto -> {
+                log.info("Прочитано событие {}", eventDto);
+            });
+        } finally {
+            ack.acknowledge();
+        }
+        log.debug("Movie consumer: записи обработаны");
+    }
+
+
 }

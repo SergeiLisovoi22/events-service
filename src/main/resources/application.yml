@@ -1,7 +1,87 @@
-spring:
-  application:
-    name: cinemaabyss-events-service
-
 server:
-  port: 8001
+  port: ${SERVER_PORT:8082}
 
+spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST:kafka:9092}
+    consumer:
+      group-id: events
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.use.type.headers: true
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: java.lang.Object
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: true
+    listener:
+      # Критично: не падать при старте, если брокер/топики ещё не готовы
+      missing-topics-fatal: false
+      ack-mode: record
+      # Если у тебя есть @KafkaListener, который рушит контекст при недоступном брокере — можно временно отключить автозапуск:
+      # auto-startup: false
+
+
+#spring:
+#  application:
+#    name: cinemaabyss-events-service
+
+#server:
+#  port: ${SERVER_PORT:8082}
+#
+#spring:
+#  kafka:
+#    bootstrap-servers: kafka:9092
+#    consumer:
+#      group-id: events
+#      auto-offset-reset: earliest
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+#      properties:
+#        spring.json.use.type.headers: true
+#        spring.json.trusted.packages: "*"
+#        spring.json.value.default.type: java.lang.Object
+#    producer:
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#      properties:
+#        spring.json.add.type.headers: true
+#
+#kafka:
+#  topics:
+#    movie: ${KAFKA_TOPIC_MOVIE:movie-events}
+#    user: ${KAFKA_TOPIC_USER:user-events}
+#    payment: ${KAFKA_TOPIC_PAYMENT:payment-events}
+
+
+
+#  kafka:
+#    bootstrap-servers: localhost:9092
+#    consumer:
+#      group-id: events-service
+#      auto-offset-reset: earliest
+##      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+##      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+##    producer:
+##      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+##      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+#
+#kafka:
+#  topics:
+#    movie: movie-events
+#    user: user-events
+#    payment: payment-events
+#
+#server:
+#  port: 8082
+
+#kafka:
+#  host: localhost:9092
+#  consumer:
+#    group-id: "events"
+#    auto-offset-reset: earliest
+#    event-topic-name: events

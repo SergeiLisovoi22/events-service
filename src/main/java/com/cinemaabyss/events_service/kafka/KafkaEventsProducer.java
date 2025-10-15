@@ -11,10 +11,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class KafkaEventsProducer {
 
-    private final static String EVENTS_TOPIC = "events";
-    private final KafkaTemplate<String, EventDto> kafkaEventTemplate;
+    private final KafkaTemplate<String, Object> kafkaEventTemplate;
 
-    public void sendMessage(EventDto event) {
-        kafkaEventTemplate.send(EVENTS_TOPIC, event);
+    public void sendMessage(EventDto event, String topicName) {
+        kafkaEventTemplate.send(topicName, event);
     }
+
+
 }

@@ -23,13 +23,14 @@ public class EventsService {
         return new EventResponseDto("success", 0, 0, eventDto);
     }
 
-    private EventDto buildAndSendEvent(String type, Object payloadDto) {
+    private EventDto buildAndSendEvent(String eventType, Object payloadDto) {
         String id = UUID.randomUUID().toString();
         OffsetDateTime now = OffsetDateTime.now();
         JsonNode payload = objectMapper.valueToTree(payloadDto);
 
-        EventDto event = new EventDto(id, type, now, payload);
-        kafkaEventsProducer.sendMessage(event);
+        EventDto event = new EventDto(id, eventType, now, payload);
+        String EVENTS_TOPIC = "-events";
+        kafkaEventsProducer.sendMessage(event, eventType + EVENTS_TOPIC);
         return event;
     }
 }
